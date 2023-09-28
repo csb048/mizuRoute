@@ -15,7 +15,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "OpenWQ_hydrolink.h"
 #include "OpenWQ_interface.h"
-#include "OpenWQ_units.h"
+#include "openwq/src/utils/OpenWQ_utils.hpp"
 
 // Constructor
 // initalize numHRUs value
@@ -44,25 +44,25 @@ int CLASSWQ_openwq::decl(
     //this->num_HRU = num_HRU;
     this->nRch = nRch;
 
-    if (OpenWQ_hostModelconfig_ref->HydroComp.size()==0) {
+    if (OpenWQ_hostModelconfig_ref->get_num_HydroComp()==0) {
 
         // Compartment names
         // Make sure to use capital letters for compartment names
-        OpenWQ_hostModelconfig_ref->HydroComp.push_back(OpenWQ_hostModelconfig::hydroTuple(rivernetwork_nRch_openwq,"RIVER_NETWORK_REACHES", nRch, 1, 1));
+        OpenWQ_hostModelconfig_ref->add_HydroComp(rivernetwork_nRch_openwq,"RIVER_NETWORK_REACHES", nRch, 1, 1);
 
         // External fluxes
         // Make sure to use capital letters for external fluxes
-        OpenWQ_hostModelconfig_ref->HydroExtFlux.push_back(OpenWQ_hostModelconfig::hydroTuple(summaEWF_runoff_openwq,"SUMMA_RUNOFF", nRch, 1, 1));
+        OpenWQ_hostModelconfig_ref->add_HydroExtFlux(summaEWF_runoff_openwq,"SUMMA_RUNOFF", nRch, 1, 1);
 
-        OpenWQ_vars_ref = new OpenWQ_vars(OpenWQ_hostModelconfig_ref->HydroComp.size(),
-                                          OpenWQ_hostModelconfig_ref->HydroExtFlux.size());
+        OpenWQ_vars_ref = new OpenWQ_vars(OpenWQ_hostModelconfig_ref->get_num_HydroComp(),
+                                          OpenWQ_hostModelconfig_ref->get_num_HydroExtFlux());
 
         // Dependencies
         // to expand BGC modelling options
         // OpenWQ_hostModelconfig_ref->HydroDepend.push_back(OpenWQ_hostModelconfig::hydroTuple(0,"SM",        num_HRU,nYdirec_2openwq, nSnow_2openwq + nSoil_2openwq));
 
         // Master Json
-        OpenWQ_wqconfig_ref->OpenWQ_masterjson = "openWQ_master.json";
+        OpenWQ_wqconfig_ref->set_OpenWQ_masterjson("/code/synthetic_tests/1_Athabasca_River_remapped/summa/openWQ_master.json");
 
 
         OpenWQ_couplercalls_ref->InitialConfig(
@@ -100,7 +100,7 @@ int CLASSWQ_openwq::openwq_run_time_start(
     
     // update Vars that rely on Snow
     for (int x = 0; x < nRch_2openwq; x++) {
-        (*OpenWQ_hostModelconfig_ref->waterVol_hydromodel)[rivernetwork_nRch_openwq](x,0,0) = REACH_VOL_0[x];   // snow
+        OpenWQ_hostModelconfig_ref->set_waterVol_hydromodel_at(rivernetwork_nRch_openwq,x,0,0,REACH_VOL_0[x]);   // snow
     }
 
 
@@ -148,7 +148,7 @@ int CLASSWQ_openwq::openwq_run_space(
         0);
 
     // Updating waterVol_hydromodel
-    (*OpenWQ_hostModelconfig_ref->waterVol_hydromodel)[source](ix_s,iy_s,iz_s) = wmass_source;
+    OpenWQ_hostModelconfig_ref->set_waterVol_hydromodel_at(source,ix_s,iy_s,iz_s,wmass_source);
     
     OpenWQ_couplercalls_ref->RunSpaceStep(
         *OpenWQ_hostModelconfig_ref,
