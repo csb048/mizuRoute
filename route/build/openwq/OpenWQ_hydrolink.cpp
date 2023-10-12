@@ -43,6 +43,7 @@ int CLASSWQ_openwq::decl(
     
     //this->num_HRU = num_HRU;
     this->nRch = nRch;
+    OpenWQ_output_ref->setNumDimensions(this->nRch);
 
     if (OpenWQ_hostModelconfig_ref->get_num_HydroComp()==0) {
 
@@ -62,7 +63,7 @@ int CLASSWQ_openwq::decl(
         // OpenWQ_hostModelconfig_ref->HydroDepend.push_back(OpenWQ_hostModelconfig::hydroTuple(0,"SM",        num_HRU,nYdirec_2openwq, nSnow_2openwq + nSoil_2openwq));
 
         // Master Json
-        OpenWQ_wqconfig_ref->set_OpenWQ_masterjson("/code/synthetic_tests/1_Athabasca_River_remapped/summa/openWQ_master.json");
+        OpenWQ_wqconfig_ref->set_OpenWQ_masterjson(std::getenv("master_json"));
 
 
         OpenWQ_couplercalls_ref->InitialConfig(
