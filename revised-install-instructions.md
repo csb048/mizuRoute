@@ -15,7 +15,7 @@ Ensure that Docker is installed on your machine. LINK TO DOCKER
 
 ### Obtaining Scource Code
 * Clone Mizuroute -> https://github.com/csb048/mizuRoute.git
-    > Use the main_openwq_develop branch until updated, remember to remove this line
+    > Use the develop branch until updated, remember to remove this line
     
     `git clone https://github.com/csb048/mizuRoute.git`
 
@@ -100,8 +100,6 @@ Be mindfull that there are separate output folders for Mizuroute and OpenWQ.  Mi
 * `./mizuroute_openwq_debug path/to/controlFile.txt`
 
 Even if `mizuroute_openwq_debug` is running sucsefully, check the output directories you assigned earlyer, check to see if the outputed files are there.  If not, double check your directories in the config files and ensure those directories exist. 
-
-# Common Issues
 
 # Common Issues
 * When Running Docker commands (Including the scripts for building and launching docker containers) you may get an error stating **"ERROR: permissions denied ..."**.  To fix this run the problematic command with **sudo**,  `sudo <rest of command>`. or add youself to the docker group on your local machine.
